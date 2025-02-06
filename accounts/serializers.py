@@ -1,16 +1,10 @@
-from .models import SalesmanProfile, ApproverProfile
+from .models import Merchant
 from rest_framework.serializers import ModelSerializer
 
 
 
-class ApproverProfileSerializer (ModelSerializer):
+
+class MerchantSerializer (ModelSerializer):
     class Meta:
-        model = ApproverProfile
-        fields = ['user', 'department']
-
-
-
-class SalesmanProfileSerializer (ModelSerializer):
-    class Meta:
-        model = SalesmanProfile
+        model = Merchant 
         fields = ['user', 'company_name', 'current_balance']
