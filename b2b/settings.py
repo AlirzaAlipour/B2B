@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_api_key",
     "djoser",
     "drf_yasg",
     "merchants",
@@ -138,7 +139,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        'topups.permissions.HasMerchantAPIKey',
+    ]
 }
 
 SIMPLE_JWT = {
@@ -146,4 +151,6 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=2),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
+
+
 
