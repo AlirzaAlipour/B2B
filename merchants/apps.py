@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class AccountConfig(AppConfig):
+class MerchantsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "accounts"
+    name = "merchants"
 
     def ready(self):
-        import accounts.signals
+        import merchants.signals
