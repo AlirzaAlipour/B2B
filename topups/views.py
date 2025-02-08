@@ -1,12 +1,14 @@
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
+from rest_framework import status
 from .models import TopUpRequest
-from merchants.models import MerchantAPIKey
+from merchants.models import MerchantAPIKey, Merchant
 from .serializers import TopUpRequestSerializer
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from .permissions import HasMerchantAPIKey
+from django.db.models import F
 
 
 
@@ -18,24 +20,30 @@ class TopUpCreateView(CreateAPIView):
     serializer_class = TopUpRequestSerializer
 
     def create(self, request, *args, **kwargs):
+
+        
         str_api_key = request.META['HTTP_AUTHORIZATION'] 
         prefix = str_api_key.split(' ')[1].split('.')[0]
         api_key_object = get_object_or_404(MerchantAPIKey, prefix = prefix)
         serializer = self.get_serializer(data=request.data)
-        merchant = api_key_object.merchant
-        serializer.is_valid(raise_exception=True)
-        serializer.validated_data['merchant'] = merchant
 
+        # Lock the merchant row for update
         with transaction.atomic():
-            amount = serializer.validated_data['amount']
-            if amount > merchant.current_balance:
-                raise ValidationError("Not enough credits.")
-
-            merchant.current_balance -= amount
-            merchant.save() 
-            serializer.save()
-            return Response(serializer.data)
+            merchant = Merchant.objects.select_for_update().get(pk=api_key_object.merchant.pk)
             
+            serializer.is_valid(raise_exception=True)
+            serializer.validated_data['merchant'] = merchant
+
+            amount = serializer.validated_data['amount']
+            if amount > merchant.balance:
+                return Response("Not enough credits.", status=status.HTTP_400_BAD_REQUEST)
+
+            print(merchant.balance)
+            # Update the balance using F expression
+            merchant.balance = F('balance') - amount
+            print(merchant.save(update_fields=['balance']))
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 

@@ -1,4 +1,4 @@
-from rest_framework import status, mixins
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.generics import ListCreateAPIView, ListAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
@@ -51,8 +51,9 @@ class CreditRequestDetailView(RetrieveUpdateAPIView):   #for Admins
         status_update = request.data.get('status')
         amount = instance.amount
         merchant = instance.merchant
-        merchant.current_balance += amount
-        merchant.save()
+        if status_update == 'approved':
+            merchant.balance += amount
+            merchant.save()
         instance.status = status_update
         instance.save()
 

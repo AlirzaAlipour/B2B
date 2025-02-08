@@ -35,7 +35,7 @@ class MerchantAPIKeyView(GenericAPIView):
         name = f"{merchant.company_name} Key"
         
         # Delete existing API keys before creating a new one
-        merchant.apikeys.all().delete()
+        merchant.apikey.all().delete()
         
         # Create a new API key
         api_key_instance, generated_key = MerchantAPIKey.objects.create_key(name=name, merchant=merchant)

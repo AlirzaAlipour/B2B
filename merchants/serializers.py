@@ -7,8 +7,8 @@ from rest_framework.serializers import ModelSerializer
 class MerchantSerializer (ModelSerializer):
     class Meta:
         model = Merchant 
-        fields = ['user', 'company_name', 'current_balance']
-        read_only_fields = ['user','current_balance']
+        fields = ['user', 'company_name', 'balance']
+        read_only_fields = ['user','balance']
 
 
 class MerchantAPIKeySerializer(ModelSerializer):
