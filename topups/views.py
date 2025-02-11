@@ -29,7 +29,7 @@ class TopUpCreateView(CreateAPIView):
 
         # Lock the merchant row for update
         with transaction.atomic():
-            merchant = Merchant.objects.select_for_update().get(pk=api_key_object.merchant.pk)
+            merchant = Merchant.objects.get(pk=api_key_object.merchant.pk)
             
             serializer.is_valid(raise_exception=True)
             serializer.validated_data['merchant'] = merchant
@@ -40,8 +40,8 @@ class TopUpCreateView(CreateAPIView):
 
             print(merchant.balance)
             # Update the balance using F expression
-            merchant.balance = F('balance') - amount
-            print(merchant.save(update_fields=['balance']))
+            merchant.balance  -= amount
+            merchant.save(update_fields=['balance'])
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 

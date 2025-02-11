@@ -21,8 +21,8 @@ class ThreadedTopUpTest(TransactionTestCase):  # Inherit from TransactionTestCas
         self.total_amount = 0
 
     def _send_batch(self):
-        """Send 250 requests from a single thread"""
-        for _ in range(100):
+
+        for _ in range(500):
             # Create a new client for each request to avoid thread issues
             client = APIClient()
             client.credentials(HTTP_AUTHORIZATION=f'Api-Key {self.api_key}')
@@ -37,9 +37,9 @@ class ThreadedTopUpTest(TransactionTestCase):  # Inherit from TransactionTestCas
             self.total_amount += amount
 
 
-    def test_10_thread_100_requests(self):
-        # Create 4 worker threads
-        threads = [Thread(target=self._send_batch) for _ in range(10)]
+    def test_2_thread_500_requests(self):
+
+        threads = [Thread(target=self._send_batch) for _ in range(2)]
         
         for t in threads:
             t.start()

@@ -94,9 +94,7 @@ DATABASES = {
         'PASSWORD': '12244886',
         'HOST': 'localhost',
         'PORT': '5432',
-        'TEST': {
-            'PARALLEL': 4  # Match --parallel workers
-        }
+        'TEST': {}
     }
 }
 
@@ -158,6 +156,5 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=2),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
-
 
 
